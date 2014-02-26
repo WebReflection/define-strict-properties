@@ -1,0 +1,23 @@
+{
+  "version": "0.0.1",
+  "license": "MIT",
+  "name": "define-strict-properties",
+  "description": "",
+  "homepage": "https://github.com/WebReflection/define-strict-properties",
+  "keywords": [],
+  "author": {
+    "name": "Andrea Giammarchi",
+    "web": "http://webreflection.blogspot.com/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/WebReflection/define-strict-properties.git"
+  },
+  "main": "./build/define-strict-properties.js",
+  "scripts": {
+    "test": "node test/.test.js"
+  },
+  "devDependencies": {
+    "wru": ">= 0.0.0"
+  }
+}

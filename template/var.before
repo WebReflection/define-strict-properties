@@ -1,0 +1,2 @@
+(function (Object) {'use strict';
+if (Object.defineStrict) return;
