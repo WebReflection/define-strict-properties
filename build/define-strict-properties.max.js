@@ -25,6 +25,7 @@ if (Object.defineStrict) return;
 
 var
   ObjectPrototype = Object.prototype,
+  create = Object.create,
   defineProperty = Object.defineProperty,
   defineProperties = Object.defineProperties,
   hasOwnProperty = ObjectPrototype.hasOwnProperty,
@@ -37,8 +38,10 @@ var
 ;
 
 Object.defineStrict = true;
+Object._create = create;
 Object._defineProperty = defineProperty;
 Object._defineProperties = defineProperties;
+Object.create = createStrict;
 Object.defineProperty = defineStrictProperty;
 Object.defineProperties = defineStrictProperties;
 
@@ -87,6 +90,13 @@ function clone(old) {
   return descriptor;
 }
 
+function createStrict(proto, descriptors) {
+  var result = create(proto);
+  return 1 < arguments.length ?
+    defineStrictProperties(result, descriptors) :
+    result;
+}
+
 function defineStrictProperty(obj, key, descriptor) {
   var get, set;
   // inevitable if descriptors will be recycled out there
@@ -97,7 +107,7 @@ function defineStrictProperty(obj, key, descriptor) {
     get = 'get' in descriptor;
     set = 'set' in descriptor;
     if (!(get || set)) {
-      getAndSetValue(descriptor);
+      getAndSetValue(key, descriptor);
     } else {
       if (get) {
         getWrapper(descriptor);
@@ -126,7 +136,7 @@ function defineStrictProperties(obj, descriptors) {
   return obj;
 }
 
-function getAndSetValue(descriptor) {
+function getAndSetValue(name, descriptor) {
   var
     verify = 'value' in descriptor,
     value = descriptor.value, // type: 'undefined'
@@ -142,6 +152,11 @@ function getAndSetValue(descriptor) {
     delete descriptor.value;
     delete descriptor.writable;
 
+    // make it configurable for fucntions
+    if (type === 'function') {
+      descriptor.configurable = true;
+    }
+
     // nothing really to do here
     // the value cannot be changed outside
     // this closure so if it pass the isValid
@@ -154,7 +169,18 @@ function getAndSetValue(descriptor) {
     // so here is where the only check is performed
     descriptor.set = function set(newValue) {
       if (isValid(type, newValue)) {
-        value = newValue;
+        if (type === 'function') {
+          // reverse the operation
+          delete descriptor.get;
+          delete descriptor.set;
+          // assign new values
+          descriptor.value = newValue;
+          descriptor.writable = true;
+          // re-configure the property
+          defineStrictProperty(this, name, descriptor);
+        } else {
+          value = newValue;
+        }
       }
     };
 

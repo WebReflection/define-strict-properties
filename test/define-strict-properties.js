@@ -12,8 +12,8 @@ wru.test([
     test: function () {
       var
         obj = {},
-        o = Object.defineProperties(
-          Object.create(null), {
+        o = Object.create(
+          null, {
           str: {
             writable: true,
             type: 'string',
@@ -462,6 +462,58 @@ wru.test([
       me.age = 35;
       wru.assert('toString works', ('' + me) === 'Mr Andrea');
 
+    }
+  }, {
+    name: 'method as typed property',
+    test: function () {
+      function reassigned(value) {
+        wru.assert('still the right context', this === o);
+        return value;
+      }
+      var o = Object.create(null, {
+        method: {
+          writable: true,
+          type: 'function',
+          // once you decide to guard arguments and returns
+          arguments: [['string'], ['number'], ['boolean']],
+          // you do this for any lazily changed function
+          returns: ['string', 'number'],
+          // useful for handleEvent or any other callback
+          // that might be swapped at runtime
+          // preserving strict behavior ^_^
+          value: function (value) {
+            wru.assert('right context', this === o);
+            return value;
+          }
+        }
+      });
+      wru.assert('method correctly implemented', o.method(1) === 1);
+      try {
+        fail(o.method({}));
+      } catch(emAll) {
+        wru.assert('arguments guarded',
+          emAll.message === 'expected string,number,boolean received [object Object]');
+      }
+      try {
+        fail(o.method(true));
+      } catch(emAll) {
+        wru.assert('return guarded',
+          emAll.message === 'expected string,number returned true');
+      }
+      o.method = reassigned;
+      wru.assert('method working as expected', o.method(1) === 1);
+      try {
+        fail(o.method({}));
+      } catch(emAll) {
+        wru.assert('reassigned: arguments guarded',
+          emAll.message === 'expected string,number,boolean received [object Object]');
+      }
+      try {
+        fail(o.method(true));
+      } catch(emAll) {
+        wru.assert('reassigned: return guarded',
+          emAll.message === 'expected string,number returned true');
+      }
     }
   }
 ]);
