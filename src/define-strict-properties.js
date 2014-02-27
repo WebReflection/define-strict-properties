@@ -8,19 +8,31 @@ var
   isPrototypeOf = ObjectPrototype.isPrototypeOf,
   toString = ObjectPrototype.toString,
   objectArray = toString.call([]),
+  getPrototypeOf = Object.getPrototypeOf || function (o) {
+    return o.__proto__ || ObjectPrototype;
+  },
   isArray = Array.isArray || function (a) {
     return toString.call(a) === objectArray;
   }
 ;
 
+// flags the presence of this library
 Object.defineStrict = true;
+
+// save original methods
 Object._create = create;
 Object._defineProperty = defineProperty;
 Object._defineProperties = defineProperties;
+
+// replace them with strict version of them
 Object.create = createStrict;
 Object.defineProperty = defineStrictProperty;
 Object.defineProperties = defineStrictProperties;
 
+// returns a function that will
+// check all typed arguments
+// and will invoke the original callback
+// only if arguments were valid
 function argumentsVerifier(types, method) {
   return function () {
     return hasValid(types, arguments) &&
@@ -28,12 +40,25 @@ function argumentsVerifier(types, method) {
   };
 }
 
+// wrap callbacks inside the function
+// created via argumentsVerifier
 function argumentsWrapper(descriptor) {
   var
     types = descriptor.arguments,
     i = types.length || 1,
     get
   ;
+  // it tries to simplify life
+  // when there are no groups of arguments, i.e.
+  //  {arguments: ['string', 'number'],
+  //   value: function(name, age) { /* ... */ }}
+  // NOTE: in case you expect exactly an Array object
+  // that should be the prototype of the received argument
+  // it's better to pass it as a group [[myArrPrototype]]
+  // instead of just one single group [myArrPrototype]
+  // this is an edge case though but it might be
+  // the reason specs would ask for groups only
+  // avoiding any possible ambiguity
   while (i--) {
     if (!isArray(types[i])) {
       types = [types];
@@ -56,8 +81,24 @@ function argumentsWrapper(descriptor) {
   }
 }
 
+// in order to not change original descriptors
+// clone them to be as less obtrusive as possible
+// this is inevitable if descriptors will be recycled out there
+// or reused as objects in any possible way
 function clone(old) {
-  var descriptor = {}, key;
+  // did you know? descriptors by "accident"
+  // might suffer from inherited properties
+  // such get, set, writable and others
+  // here this "gotcha" is replicated
+  // in the same way to keep the environment
+  // as close to ES5 as possible
+  var
+    descriptor = create(
+      // that's why inheritance is preseved
+      getPrototypeOf(old)
+    ),
+    key
+  ;
   for (key in old) {
     if (hasOwnProperty.call(old, key)) {
       descriptor[key] = old[key];
@@ -66,6 +107,8 @@ function clone(old) {
   return descriptor;
 }
 
+// the replacemente for the public
+// Object.create(proto[, descriptor]) method
 function createStrict(proto, descriptors) {
   var result = create(proto);
   return 1 < arguments.length ?
@@ -73,13 +116,14 @@ function createStrict(proto, descriptors) {
     result;
 }
 
+// the replacemente for the public
+// Object.defineProperty(obj, propName, propDescriptor) method
 function defineStrictProperty(obj, key, descriptor) {
   var get, set;
-  // inevitable if descriptors will be recycled out there
-  // modifying them here would be too obtrusive
   descriptor = clone(descriptor);
-  // only if specified
+  // only if a type is specified
   if ('type' in descriptor) {
+    // implement the type logic
     get = 'get' in descriptor;
     set = 'set' in descriptor;
     if (!(get || set)) {
@@ -93,6 +137,9 @@ function defineStrictProperty(obj, key, descriptor) {
       }
     }
   }
+  // arguments and returns are accepted
+  // regardless the type, handy for classes
+  // and prototype definition
   if ('arguments' in descriptor) {
     argumentsWrapper(descriptor);
   }
@@ -102,6 +149,8 @@ function defineStrictProperty(obj, key, descriptor) {
   return defineProperty(obj, key, descriptor);
 }
 
+// the replacemente for the public
+// Object.defineProperties(obj, descriptors) method
 function defineStrictProperties(obj, descriptors) {
   var key;
   for (key in descriptors) {
@@ -112,6 +161,7 @@ function defineStrictProperties(obj, descriptors) {
   return obj;
 }
 
+// when no get/set are specified
 function getAndSetValue(name, descriptor) {
   var
     verify = 'value' in descriptor,
@@ -128,7 +178,13 @@ function getAndSetValue(name, descriptor) {
     delete descriptor.value;
     delete descriptor.writable;
 
-    // make it configurable for fucntions
+    // force it configurable for type fucntion
+    // classes methods usually should never need
+    // writable and configurable methods though
+    // this is for special cases like handleEvent
+    // or other method changed at runtime
+    // these need to be reconfigured with same
+    // properties once re-assigned
     if (type === 'function') {
       descriptor.configurable = true;
     }
@@ -163,6 +219,8 @@ function getAndSetValue(name, descriptor) {
   }
 }
 
+// wraps the descriptor.get
+// and verify the returning type
 function getWrapper(descriptor) {
   var
     type = descriptor.type,
@@ -175,6 +233,9 @@ function getWrapper(descriptor) {
   };
 }
 
+// check if a list of groupped arguments
+// matches those used to invoke the function
+// **trows** if fails
 function hasValid(groups, args) {
   for (var
     l,
@@ -209,6 +270,8 @@ function hasValid(groups, args) {
   );
 }
 
+// verify that a value is an expected type
+// **trows** if fails
 function isValid(expected, value) {
   var
     type = typeof expected,
@@ -228,6 +291,10 @@ function isValid(expected, value) {
   throw new Error('expected ' + expected + ' received ' + value);
 }
 
+// create a function that will invoke the method
+// and after check that the returned value
+// is an expected one from the list of expected types
+// **trows** if fails
 function returnsVerifier(types, method) {
   return function () {
     for (var
@@ -248,6 +315,8 @@ function returnsVerifier(types, method) {
   };
 }
 
+// configure the descriptor in order to use
+// the returnsVerifier created function
 function returnsWrapper(descriptor) {
   var
     types = descriptor.returns,
@@ -272,6 +341,8 @@ function returnsWrapper(descriptor) {
   }
 }
 
+// wraps the descriptor.set
+// and verify the received type
 function setWrapper(descriptor) {
   var
     type = descriptor.type,
