@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Define-strict-properties : " />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Define-strict-properties</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/WebReflection/define-strict-properties">View on GitHub</a>
+
+          <h1 id="project_title">Define-strict-properties</h1>
+          <h2 id="project_tagline"></h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/WebReflection/define-strict-properties/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/WebReflection/define-strict-properties/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a name="define-strict-properties" class="anchor" href="#define-strict-properties"><span class="octicon octicon-link"></span></a>define-strict-properties</h1>
+
+<p>defining types in JavaScript via ES5 compatible descriptors</p>
+
+<p><a href="http://travis-ci.org/WebReflection/define-strict-properties"><img src="https://secure.travis-ci.org/WebReflection/define-strict-properties.png" alt="build status"></a></p>
+
+<h3>
+<a name="objectcreateproto-typedproperties" class="anchor" href="#objectcreateproto-typedproperties"><span class="octicon octicon-link"></span></a>Object.create(proto, typedProperties)</h3>
+
+<p>Following all goals of this project:</p>
+
+<ul>
+<li>
+<strong>zero performance impact</strong>, all you have to do is to <strong>not</strong> include <a href="build/define-strict-properties.max.js">the main file</a> in production</li>
+<li>
+<strong>fully ES5 backward compatible</strong>, it works with <a href="http://www.ecma-international.org/ecma-262/5.1/#sec-8.10">ES5 descriptors</a> already in your code, nothing to change</li>
+<li>
+<strong>methods and signatures overload</strong>, you can accept one or more arguments and of different type, just specify them</li>
+<li>
+<strong>multiple returns type</strong>, you can return one or more variable type</li>
+<li>
+<strong>no syntax changes</strong>, which means no broken JavaScript, no need for transpilers, no need for source maps, no need for ... you name it, it's just vanilla JavaScript with the ability to specify types via descriptors!</li>
+</ul><p>As virtual ideal goal bonus, JavaScript engines could follow this proposal to boost up performance via typed properties, same way property access is planned to be optimized in <a href="http://wiki.ecmascript.org/doku.php?id=harmony:typed_objects">Typed Object</a> too except this proposal is also suitable for runtime operations instead of static shapes only.</p>
+
+<p>This project could also be used to actually implement StructType polyfills for ES5 browsers.</p>
+
+<h3>
+<a name="compatibility" class="anchor" href="#compatibility"><span class="octicon octicon-link"></span></a>Compatibility</h3>
+
+<p>Every browser that is compatible with ES5 specifications, including:</p>
+
+<ul>
+<li>IE9+, and IEMobile 9+</li>
+<li>any Webkit based browser (Safari, Android 2+, Kindle Silk, Blackberry, PhantomJS, etc, etc)</li>
+<li>any Chrome and Mobile Chrome,</li>
+<li>any Opera 12+ plus mobile and mini</li>
+</ul><p>To check if your browser supports this script without extra polyfills, feel free to <a href="http://webreflection.github.io/define-strict-properties/test/">check the test page</a>.</p>
+
+<h3>
+<a name="regular-es5-descriptors" class="anchor" href="#regular-es5-descriptors"><span class="octicon octicon-link"></span></a>Regular ES5 Descriptors</h3>
+
+<p>ES5 descriptors are objects usually created at runtime able to define properties in a powerful way.
+Following a quick summary about ES5 descriptors:</p>
+
+<div class="highlight highlight-javascript"><pre><span class="nb">Object</span><span class="p">.</span><span class="nx">defineProperty</span><span class="p">(</span><span class="nx">genericObject</span><span class="p">,</span> <span class="p">{</span>
+
+  <span class="c1">// will it show up in for/in or in Object.keys() ?</span>
+  <span class="nx">enumerable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>   <span class="c1">// false by default</span>
+  <span class="c1">// is it possible to redefine this value </span>
+  <span class="c1">// using Object.defineProperty again ?</span>
+  <span class="nx">configurable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span> <span class="c1">// false by default</span>
+
+
+  <span class="c1">// defining property directly</span>
+
+  <span class="c1">// specify if the value can change at runtime</span>
+  <span class="nx">writable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>     <span class="c1">// false by default</span>
+  <span class="c1">// the property value</span>
+  <span class="nx">value</span><span class="o">:</span> <span class="nx">any</span><span class="p">,</span>
+
+
+  <span class="c1">// defining property via getters/setters</span>
+  <span class="c1">// (no writable allowed by specs)</span>
+
+  <span class="c1">// the getter, returns anything, even methods</span>
+  <span class="nx">get</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">any</span><span class="p">;</span>
+  <span class="p">},</span>
+
+  <span class="c1">// the setter, will receive the set value</span>
+  <span class="c1">// obj.prop = anyValue;</span>
+  <span class="nx">set</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">anyValue</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">any</span> <span class="o">=</span> <span class="nx">anyValue</span><span class="p">;</span>
+  <span class="p">}</span>
+
+<span class="p">});</span>
+</pre></div>
+
+<h3>
+<a name="enriched-es5-descriptors" class="anchor" href="#enriched-es5-descriptors"><span class="octicon octicon-link"></span></a>Enriched ES5 Descriptors</h3>
+
+<p>If you include <a href="build/define-strict-properties.max.js">define-strict-properties</a> before other scripts in your development environment, you'll be able to do more with descriptors preserving native ES5 behavior.</p>
+
+<h3>
+<a name="types" class="anchor" href="#types"><span class="octicon octicon-link"></span></a>Types</h3>
+
+<p>These are the types that work exactly the same when specified as <code>arguments</code>, <code>returns</code>, or <code>type</code> fields in the descriptor.</p>
+
+<ul>
+<li>
+<strong>"boolean"</strong>, as <code>typeof obj === 'boolean'</code>
+</li>
+<li>
+<strong>"function"</strong>, as <code>typeof obj === 'function'</code>
+</li>
+<li>
+<strong>"number"</strong>, as <code>typeof obj === 'number'</code>
+</li>
+<li>
+<strong>"object"</strong>, as <code>typeof obj === 'object'</code>, including <code>null</code>, no surprises here, is still JS as it is</li>
+<li>
+<strong>"string"</strong>, as <code>typeof obj === 'string'</code>
+</li>
+<li>
+<strong>"undefined"</strong>, as <code>typeof obj === 'undefined'</code>, it looks pointless but it can actually become handy if there is some property that should be flagged as <em>reserved</em> and accessing it should throw an error</li>
+<li>
+<strong>"any"</strong>, as any kind of value, it will accept really anything, basically a white flag for the typeof filter</li>
+<li>
+<strong>Constructor</strong>, validated as <code>obj instanceof Constructor</code>
+</li>
+<li>
+<strong>genericObject</strong>, validated as <code>genericObject.isPrototypeOf(obj)</code>, particularly handy if you use <code>Object.create(fromObject)</code> instead of constructors for new objects instead of classes</li>
+</ul><p>Following few examples on how to use them.</p>
+
+<h3>
+<a name="typed-value" class="anchor" href="#typed-value"><span class="octicon octicon-link"></span></a>Typed Value</h3>
+
+<div class="highlight highlight-javascript"><pre><span class="c1">// basic descriptor example</span>
+<span class="nb">Object</span><span class="p">.</span><span class="nx">defineProperty</span><span class="p">(</span><span class="nx">genericObject</span><span class="p">,</span> <span class="p">{</span>
+  <span class="nx">type</span><span class="o">:</span> <span class="s1">'number'</span><span class="p">,</span>
+  <span class="nx">writable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="nx">value</span><span class="o">:</span> <span class="mi">123</span>
+<span class="p">});</span>
+
+<span class="c1">// via multiple descriptors</span>
+<span class="kd">var</span> <span class="nx">typed</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="p">{</span>
+  <span class="nx">method</span><span class="o">:</span> <span class="p">{</span>
+    <span class="nx">type</span><span class="o">:</span> <span class="s1">'function'</span><span class="p">,</span>
+    <span class="nx">writable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="nx">value</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+      <span class="c1">// it can be change even later on</span>
+      <span class="c1">// with another method</span>
+    <span class="p">}</span>
+    <span class="c1">// keep reading for arguments</span>
+    <span class="c1">// and returns type</span>
+  <span class="p">},</span>
+  <span class="nx">property</span><span class="o">:</span> <span class="p">{</span>
+    <span class="nx">type</span><span class="o">:</span> <span class="s1">'string'</span><span class="p">,</span>
+    <span class="nx">value</span><span class="o">:</span> <span class="s1">'Hello There!'</span>
+  <span class="p">},</span>
+  <span class="nx">instance</span><span class="o">:</span> <span class="p">{</span>
+    <span class="nx">type</span><span class="o">:</span> <span class="nx">HTMLElement</span><span class="p">,</span>
+    <span class="nx">value</span><span class="o">:</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">'canvas'</span><span class="p">)</span>
+  <span class="p">},</span>
+  <span class="nx">proto</span><span class="o">:</span> <span class="p">{</span>
+    <span class="nx">type</span><span class="o">:</span> <span class="nx">someObjectThatIsPrototypeOf</span><span class="p">,</span>
+    <span class="nx">value</span><span class="o">:</span> <span class="nx">anotherOne</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</pre></div>
+
+<h3>
+<a name="methods-arguments" class="anchor" href="#methods-arguments"><span class="octicon octicon-link"></span></a>Methods <code>arguments</code>
+</h3>
+
+<div class="highlight highlight-javascript"><pre>
+<span class="kd">function</span> <span class="nx">Person</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="nx">name</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nb">Object</span><span class="p">.</span><span class="nx">defineProperties</span><span class="p">(</span>
+  <span class="nx">Person</span><span class="p">.</span><span class="nx">prototype</span><span class="p">,</span> <span class="p">{</span>
+
+  <span class="c1">// properties</span>
+  <span class="c1">// easy to ensure types</span>
+  <span class="nx">title</span><span class="o">:</span> <span class="p">{</span>
+    <span class="nx">writable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="nx">type</span><span class="o">:</span> <span class="s1">'string'</span><span class="p">,</span>
+    <span class="nx">value</span><span class="o">:</span> <span class="s1">''</span> <span class="c1">// as default</span>
+  <span class="p">},</span>
+  <span class="nx">age</span><span class="o">:</span> <span class="p">{</span>
+    <span class="nx">writable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="nx">type</span><span class="o">:</span> <span class="s1">'number'</span><span class="p">,</span>
+    <span class="nx">value</span><span class="o">:</span> <span class="mi">0</span>
+  <span class="p">},</span>
+  <span class="nx">name</span><span class="o">:</span> <span class="p">{</span>
+    <span class="nx">writable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="nx">type</span><span class="o">:</span> <span class="s1">'string'</span>
+  <span class="p">},</span>
+
+  <span class="c1">// methods are easily</span>
+  <span class="c1">// ensured by default as not enumerable</span>
+  <span class="c1">// not configurable and not writable</span>
+  <span class="c1">// so that is not possible to change</span>
+  <span class="c1">// them during a class lifecycle</span>
+  <span class="c1">// and this is normal ES5 behavior ;-)</span>
+  <span class="nx">promoteTo</span><span class="o">:</span> <span class="p">{</span>
+    <span class="c1">// only one argument, as string</span>
+    <span class="nx">arguments</span><span class="o">:</span> <span class="p">[</span><span class="s1">'string'</span><span class="p">],</span>
+    <span class="nx">value</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">title</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">title</span> <span class="o">=</span> <span class="nx">title</span> <span class="o">+</span> <span class="s1">' '</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+
+  <span class="nx">toString</span><span class="o">:</span> <span class="p">{</span>
+    <span class="nx">returns</span><span class="o">:</span> <span class="p">[</span><span class="s1">'string'</span><span class="p">],</span>
+    <span class="nx">value</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">title</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">name</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+<span class="p">});</span>
+
+<span class="kd">var</span> <span class="nx">me</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Person</span><span class="p">(</span><span class="s1">'Andrea'</span><span class="p">);</span>
+<span class="nx">me</span><span class="p">.</span><span class="nx">promoteTo</span><span class="p">(</span><span class="s1">'Mr'</span><span class="p">);</span>
+<span class="nx">me</span><span class="p">.</span><span class="nx">age</span> <span class="o">=</span> <span class="mi">35</span><span class="p">;</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">''</span> <span class="o">+</span> <span class="nx">me</span><span class="p">);</span> <span class="c1">// Mr Andrea</span>
+</pre></div>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Define-strict-properties maintained by <a href="https://github.com/WebReflection">WebReflection</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
