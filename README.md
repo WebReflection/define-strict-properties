@@ -121,17 +121,20 @@ function Person(name) {
 Object.defineProperties(
   Person.prototype, {
 
-  // some property
-  // it's that easy to ensure types
+  // properties
+  // easy to ensure types
   title: {
+    writable: true,
     type: 'string',
     value: '' // as default
   },
   age: {
+    writable: true,
     type: 'number',
     value: 0
   },
   name: {
+    writable: true,
     type: 'string'
   },
 
