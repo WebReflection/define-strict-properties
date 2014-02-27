@@ -1,12 +1,8 @@
 language: node_js
 node_js:
   - 0.8
-<<<<<<< HEAD
   - 0.10
   - 0.11
-=======
-  - 0.9
->>>>>>> 15165c7316379593c40b9fc5dd9be6b007b1f8a0
 git:
   depth: 1
 branches:
