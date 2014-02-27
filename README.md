@@ -15,17 +15,20 @@ Following all goals of this project:
   * **multiple returns type**, you can return one or more variable type
   * **no syntax changes**, which means no broken JavaScript, no need for transpilers, no need for source maps, no need for ... you name it, it's just vanilla JavaScript with the ability to specify types via descriptors!
 
-As virtual ideal goal bonus, JavaScript engines could follow this proposal to boost up performance via typed properties, same way property access is planned to be optimized in [Typed Object](http://wiki.ecmascript.org/doku.php?id=harmony:typed_objects) too except this proposal is also suitable for runtime operations instead of static shapes only.
+As extra ideal goal, JS documentation tools could use these descriptors to simplify the generation of the documentation per each _class_ structure.
 
-This project could also be used to actually implement StructType polyfills for ES5 browsers.
+Moreover, as virtual ideal goal bonus, JavaScript engines could follow this proposal to boost up performance via typed properties, in a similar way property access is planned to be optimized in [Typed Object](http://wiki.ecmascript.org/doku.php?id=harmony:typed_objects) anyway, except this proposal is also suitable for runtime operations instead of static shapes only.
+
+Last but not least, this project could also be used to actually implement StructType polyfills for ES5 compatible engines.
 
 ### Compatibility
-Every browser that is compatible with ES5 specifications, including:
+Every engine that is compatible with ES5 specifications, including:
 
   * IE9+, and IEMobile 9+
   * any Webkit based browser (Safari, Android 2+, Kindle Silk, Blackberry, PhantomJS, etc, etc)
   * any Chrome and Mobile Chrome,
   * any Opera 12+ plus mobile and mini
+  * nodejs, Rhino, DynJS, I believe any updated server side JS engine too
 
 To check if your browser supports this script without extra polyfills, feel free to [check the test page](http://webreflection.github.io/define-strict-properties/test/).
 
