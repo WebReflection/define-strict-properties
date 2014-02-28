@@ -515,5 +515,16 @@ wru.test([
           emAll.message === 'expected string,number returned true');
       }
     }
+  }, {
+    name: 'null',
+    test: function () {
+      var o = Object.create(null, {
+        value: {
+          type: 'object',
+          value: null
+        }
+      });
+      wru.assert(o.value === null);
+    }
   }
 ]);
