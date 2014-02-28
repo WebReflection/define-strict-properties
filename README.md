@@ -19,7 +19,7 @@ As extra ideal goal, JS documentation tools could use these descriptors to simpl
 
 Moreover, as virtual ideal goal bonus, JavaScript engines could follow this proposal to boost up performance via typed properties, in a similar way property access is planned to be optimized in [Typed Object](http://wiki.ecmascript.org/doku.php?id=harmony:typed_objects) anyway, except this proposal is also suitable for runtime operations instead of static shapes only.
 
-Last but not least, this project could also be used to actually implement `StructType` polyfills for ES5 compatible engines.
+Last but not least, this project could also be used to actually implement [`StructType` polyfills](src/StructType.js) for ES5 compatible engines.
 
 ### Compatibility
 Every engine that is compatible with ES5 specifications, including:
