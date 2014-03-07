@@ -106,7 +106,7 @@ var typed = Object.create(null, {
     type: 'function',
     writable: true,
     value: function () {
-      // it can be change even later on
+      // it can be changed even later on
       // with another method
     }
     // keep reading for arguments
@@ -182,3 +182,6 @@ me.promoteTo('Mr');
 me.age = 35;
 console.log('' + me); // Mr Andrea
 ```
+
+### License
+A classic [MIT Style License](./LICENSE.txt)
