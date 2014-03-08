@@ -25,12 +25,12 @@ Last but not least, this project could also be used to actually implement [`Stru
 Every engine that is compatible with ES5 specifications, including:
 
   * IE9+, and IEMobile 9+
-  * any Webkit based browser (Safari, Android 2+, iOS 5+, Kindle Silk, Blackberry, PhantomJS, webOS, etc, etc)
+  * any Webkit based browser (Safari, Android 2+, iOS 5+, Kindle Silk, Blackberry, PhantomJS, webOS, etc)
   * any Chrome and Mobile Chrome,
   * any Opera 12+ plus mobile and mini
   * nodejs, Rhino, DynJS, I believe any updated server side JS engine too
 
-To check if your browser supports this script without extra polyfills, feel free to [check the test page](http://webreflection.github.io/define-strict-properties/test/).
+To check if your browser supports this script without extra polyfills, feel free to **[check the test page](http://webreflection.github.io/define-strict-properties/test/)**
 
 ### Regular ES5 Descriptors
 ES5 descriptors are objects usually created at runtime able to define properties in a powerful way.
