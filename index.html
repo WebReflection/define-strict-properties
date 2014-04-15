@@ -54,20 +54,23 @@
 <strong>multiple returns type</strong>, you can return one or more variable type</li>
 <li>
 <strong>no syntax changes</strong>, which means no broken JavaScript, no need for transpilers, no need for source maps, no need for ... you name it, it's just vanilla JavaScript with the ability to specify types via descriptors!</li>
-</ul><p>As virtual ideal goal bonus, JavaScript engines could follow this proposal to boost up performance via typed properties, same way property access is planned to be optimized in <a href="http://wiki.ecmascript.org/doku.php?id=harmony:typed_objects">Typed Object</a> too except this proposal is also suitable for runtime operations instead of static shapes only.</p>
+</ul><p>As extra ideal goal, JS documentation tools could use these descriptors to simplify the generation of the documentation per each <em>class</em> structure.</p>
 
-<p>This project could also be used to actually implement StructType polyfills for ES5 browsers.</p>
+<p>Moreover, as virtual ideal goal bonus, JavaScript engines could follow this proposal to boost up performance via typed properties, in a similar way property access is planned to be optimized in <a href="http://wiki.ecmascript.org/doku.php?id=harmony:typed_objects">Typed Object</a> anyway, except this proposal is also suitable for runtime operations instead of static shapes only.</p>
+
+<p>Last but not least, this project could also be used to actually implement <a href="src/StructType.js"><code>StructType</code> polyfills</a> for ES5 compatible engines.</p>
 
 <h3>
 <a name="compatibility" class="anchor" href="#compatibility"><span class="octicon octicon-link"></span></a>Compatibility</h3>
 
-<p>Every browser that is compatible with ES5 specifications, including:</p>
+<p>Every engine that is compatible with ES5 specifications, including:</p>
 
 <ul>
 <li>IE9+, and IEMobile 9+</li>
 <li>any Webkit based browser (Safari, Android 2+, Kindle Silk, Blackberry, PhantomJS, etc, etc)</li>
 <li>any Chrome and Mobile Chrome,</li>
 <li>any Opera 12+ plus mobile and mini</li>
+<li>nodejs, Rhino, DynJS, I believe any updated server side JS engine too</li>
 </ul><p>To check if your browser supports this script without extra polyfills, feel free to <a href="http://webreflection.github.io/define-strict-properties/test/">check the test page</a>.</p>
 
 <h3>
@@ -162,7 +165,7 @@ Following a quick summary about ES5 descriptors:</p>
     <span class="nx">type</span><span class="o">:</span> <span class="s1">'function'</span><span class="p">,</span>
     <span class="nx">writable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
     <span class="nx">value</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-      <span class="c1">// it can be change even later on</span>
+      <span class="c1">// it can be changed even later on</span>
       <span class="c1">// with another method</span>
     <span class="p">}</span>
     <span class="c1">// keep reading for arguments</span>
@@ -240,6 +243,11 @@ Following a quick summary about ES5 descriptors:</p>
 <span class="nx">me</span><span class="p">.</span><span class="nx">age</span> <span class="o">=</span> <span class="mi">35</span><span class="p">;</span>
 <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">''</span> <span class="o">+</span> <span class="nx">me</span><span class="p">);</span> <span class="c1">// Mr Andrea</span>
 </pre></div>
+
+<h3>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h3>
+
+<p>A classic <a href="./LICENSE.txt">MIT Style License</a></p>
       </section>
     </div>
 
